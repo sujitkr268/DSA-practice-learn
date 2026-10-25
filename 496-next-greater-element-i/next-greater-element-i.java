@@ -1,29 +1,34 @@
 
+import java.util.*;
+
 class Solution {
     public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        Map<Integer, Integer> map = new HashMap<>();
+        Stack<Integer> stack = new Stack<>();
+
         int n1 = nums1.length;
         int n2 = nums2.length;
+
+        for (int i = n2 - 1; i >= 0; i--) {
+            int target = nums2[i];
+
+            while (!stack.isEmpty() && stack.peek() <= target) {
+                stack.pop();
+            }
+
+            if (stack.isEmpty()) {
+                map.put(target, -1);
+            } else {
+                map.put(target, stack.peek());
+            }
+
+            stack.push(target);
+        }
+
         int[] result = new int[n1];
 
         for (int i = 0; i < n1; i++) {
-            int target = nums1[i];
-            int j = 0;
-            int ans = -1;
-
-            // Find target in nums2
-            while (j < n2 && nums2[j] != target) {
-                j++;
-            }
-
-            // Find the next greater element
-            for (int k = j + 1; k < n2; k++) {
-                if (nums2[k] > target) {
-                    ans = nums2[k];
-                    break;
-                }
-            }
-
-            result[i] = ans;
+            result[i] = map.get(nums1[i]);
         }
 
         return result;
